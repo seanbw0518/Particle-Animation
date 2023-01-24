@@ -1,0 +1,149 @@
+﻿<Window x:Class="Particles.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:local="clr-namespace:Particles"
+        mc:Ignorable="d"
+        Title="Particles" Height="700" Width="1000">
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition Height="389*"/>
+            <RowDefinition Height="32*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="453*" />
+            <ColumnDefinition Width="200"/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="StartStopButton" Content="Start" Width="95" Margin="0,5,0,0" HorizontalAlignment="Left" FontSize="14" Click="StartStop"/>
+        <Button x:Name="ResetButton" Margin="100,5,10,0" Content="Reset" FontSize="14" Click="ResetParticles"/>
+        <Button x:Name="ClearButton" Margin="195,5,295,0" Content="Clear" FontSize="14" Click="ClearParticles" Grid.ColumnSpan="2" HorizontalAlignment="Left" Width="90" />
+
+        <Canvas x:Name="Canvas" Grid.Column="1" Background="Black" Margin="5,10,0,0" Grid.Row="1" Grid.RowSpan="2" />
+        
+        <Label HorizontalContentAlignment="Center" FontSize="16" Content="Particle Types" Grid.Column="2" Grid.RowSpan="1" VerticalAlignment="Top"/>
+
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Grid.Column="2" Margin="0,5,0,48" Grid.RowSpan="3">
+            <StackPanel Margin="0,40,0,0" Name="TypeStack">
+                <!--<Grid Margin="5,0,5,0">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="40*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.ColumnSpan="6" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" VerticalAlignment="Center" FontSize="14" FontWeight="Bold">Type 0</Label>
+
+                    <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="1" Content="Q" HorizontalAlignment="Left"/>
+                    <TextBox Grid.RowSpan="1" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" TextChanged=""/>
+                    <Label Grid.RowSpan="1" Grid.Column="2" Grid.Row="1" Content="R" HorizontalAlignment="Left"/>
+                    <TextBox Grid.RowSpan="1" Grid.Column="3" Grid.Row="1" VerticalAlignment="Center"/>
+                    <Label Grid.RowSpan="1" Grid.Column="4" Grid.Row="1" Content="M" HorizontalAlignment="Left"/>
+                    <TextBox Grid.RowSpan="1" Grid.Column="5" Grid.Row="1" VerticalAlignment="Center"/>
+
+                    <Label Grid.RowSpan="1" Grid.Column="0" Grid.Row="2" Content="#" Grid.ColumnSpan="1" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="1" VerticalAlignment="Center"/>
+
+                    <Label Grid.RowSpan="1" Grid.Column="3" Grid.Row="2" Content="Radius" Grid.ColumnSpan="2" HorizontalAlignment="Left"/>
+                    <TextBox Grid.Column="5" Grid.Row="2" Grid.ColumnSpan="1" VerticalAlignment="Center"/>
+
+                    <xctk:ColorPicker Name="ColorPicker" SelectedColorChanged="ColorChanged" Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="6"></xctk:ColorPicker>
+
+                    <Button Grid.Row="4" Grid.ColumnSpan="6" Margin="0,5,0,0" Height="25" VerticalAlignment="Center">Remove</Button>
+
+                </Grid>-->
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" Margin="0,10,0,0" Grid.Row="1" Grid.RowSpan="2">
+            <StackPanel>
+                <Label HorizontalContentAlignment="Center" VerticalAlignment="Top" FontSize="16">Configuration</Label>
+
+                <Label FontSize="12" Content="Framerate (ms)"/>
+                <Grid>
+                    <Slider x:Name="framerateSlider" ValueChanged="framerateChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Minimum="1" Maximum="250" SmallChange="1" LargeChange="10" TickFrequency="20" Value="8"/>
+                    <TextBox x:Name="framerateBox" Text="{Binding Value, ElementName=framerateSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="128,0,10,17" KeyDown="framerateChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Velocity Multiplier"/>
+                <Grid>
+                    <Slider x:Name="vMultSlider" ValueChanged="vMultChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Maximum="2" TickFrequency="0.1" Value="0.5" LargeChange="0.1" SmallChange="0.05" Minimum="0"/>
+                    <TextBox x:Name="vMultBox" Text="{Binding Value, ElementName=vMultSlider, StringFormat=N2}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="vMultChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Charge Constant"/>
+                <Grid>
+                    <Slider x:Name="kSlider" ValueChanged="kChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Minimum="-3" Maximum="3" SmallChange="0.01" LargeChange="0.1" TickFrequency="0.5" Value="-5"/>
+                    <TextBox x:Name="kBox" Text="{Binding Value, ElementName=kSlider, StringFormat=N2}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="kChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Reactivity Constant"/>
+                <Grid>
+                    <Slider x:Name="rSlider" ValueChanged="rChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" LargeChange="0.1" Maximum="3" Minimum="-3" SmallChange="0.01" TickFrequency="0.5" Value="-0.01"/>
+                    <TextBox x:Name="rBox" Text="{Binding Value, ElementName=rSlider, StringFormat=N3}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="rChanged" />
+                </Grid>
+                <Label FontSize="12" Content="Max Charge Range"/>
+                <Grid>
+                    <Slider x:Name="maxKRangeSlider" ValueChanged="maxKChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Maximum="2000" LargeChange="500" SmallChange="50" TickFrequency="500" Value="200" Minimum="1"/>
+                    <TextBox x:Name="maxKRangeBox" Text="{Binding Value, ElementName=maxKRangeSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="maxKChanged" />
+                </Grid>
+                <Label FontSize="12" Content="Min Charge Range"/>
+                <Grid>
+                    <Slider x:Name="minKRangeSlider" ValueChanged="minKChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Maximum="50" SmallChange="1" LargeChange="5" TickFrequency="5" Value="0" Minimum="0"/>
+                    <TextBox x:Name="minKRangeBox" Text="{Binding Value, ElementName=minKRangeSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="minKChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Max Reactivity Range"/>
+                <Grid>
+                    <Slider x:Name="maxRRangeSlider" ValueChanged="maxRChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" Value="25" Maximum="2000" LargeChange="500" SmallChange="50" Minimum="1" TickFrequency="497"/>
+                    <TextBox x:Name="maxRRangeBox" Text="{Binding Value, ElementName=maxRRangeSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="maxRChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Min Reactivity Range"/>
+                <Grid>
+                    <Slider x:Name="minRRangeSlider" ValueChanged="minRChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" TickFrequency="3" SmallChange="1" Maximum="75" LargeChange="5" Value="12" Minimum="0"/>
+                    <TextBox x:Name="minRRangeBox" Text="{Binding Value, ElementName=minRRangeSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="minRChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Charge Energy Loss"/>
+                <Grid>
+                    <Slider x:Name="kLossSlider" ValueChanged="kLossChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" LargeChange="0.1" Maximum="1" TickFrequency="0.005" Value="0.99" Minimum="0.5" SmallChange="0.001"/>
+                    <TextBox x:Name="kLossBox" Text="{Binding Value, ElementName=kLossSlider, StringFormat=N3}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="kLossChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Reaction Energy Loss"/>
+                <Grid>
+                    <Slider x:Name="rLossSlider" ValueChanged="rLossChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" LargeChange="0.1" Maximum="1" SmallChange="0.001" TickFrequency="0.005" Value="0.99" Minimum="0.5"/>
+                    <TextBox x:Name="rLossBox" Text="{Binding Value, ElementName=rLossSlider, StringFormat=N3}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="rLossChanged"/>
+                </Grid>
+                <Label FontSize="12" Content="Edge Bounce Loss"/>
+                <Grid>
+                    <Slider x:Name="bounceLossSlider" ValueChanged="bounceLossChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" LargeChange="0.1" Maximum="1" SmallChange="0.05" TickFrequency="0.05" Value="0.8" Minimum="0"/>
+                    <TextBox x:Name="bounceLossBox" Text="{Binding Value, ElementName=bounceLossSlider, StringFormat=N3}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="bounceLossChanged" />
+                </Grid>
+                <Label FontSize="12" Content="Maximum Velocity"/>
+                <Grid>
+                    <Slider x:Name="maxVSlider" ValueChanged="maxVChanged" Height="33" TickPlacement="BottomRight" Margin="0,0,60,0" LargeChange="100" Maximum="1000" SmallChange="50" TickFrequency="100" Value="500" Minimum="1"/>
+                    <TextBox x:Name="maxVBox" Text="{Binding Value, ElementName=maxVSlider, StringFormat=N0}" TextAlignment="Right" Height="16" Margin="124,0,10,17" KeyDown="maxVChanged" />
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button x:Name="AddParticleButton" Margin="15,0,0,0" Padding="5,0,5,0" Content="Add New" FontSize="14" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Height="26" Click="CreateParticleType" HorizontalAlignment="Left"/>
+
+        <!--<Button x:Name="SaveParticleButton" Margin="0,0,15,0" Padding="5,0,5,0" Content="Save Types" FontSize="14" Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Height="26" Click="WriteParticleTypesToXml" HorizontalAlignment="Right"/>-->
+
+    </Grid>
+</Window>
